@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Tích Kỹ Thuật VN100</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- EMBEDDED GUIDE MODAL CSS --- */
+        .guide-modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .guide-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .guide-modal-container {
+            background-color: #fff;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            border: 1px solid #e0e0e0;
+        }
+
+        .guide-modal-overlay.show .guide-modal-container {
+            transform: scale(1);
+        }
+
+        /* Header */
+        .guide-modal-header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+            padding: 20px 25px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .guide-modal-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .guide-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .guide-close-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Content Body */
+        .guide-modal-body {
+            padding: 25px 35px;
+            overflow-y: auto;
+            color: #333;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        .guide-modal-body h3 {
+            color: #1976d2;
+            margin-top: 0;
+            font-size: 1.6rem;
+            border-bottom: 2px solid #ff9800;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        .guide-subtitle {
+            display: block;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .guide-section-title {
+            background-color: #fff3e0;
+            color: #e65100;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Strategy Box */
+        .guide-strategy-box {
+            background: #f5f9fc;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .guide-strategy-item {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+
+        .guide-strategy-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .guide-tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-right: 15px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .tag-buy {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .tag-sell {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Footer */
+        .guide-modal-footer {
+            padding: 15px 25px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .guide-back-btn {
+            background-color: #607d8b;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-back-btn:hover {
+            background-color: #455a64;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Scrollbar */
+        .guide-modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .guide-modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .guide-modal-body::-webkit-scrollbar-thumb {
+            background: #bdbdbd;
+            border-radius: 10px;
+        }
+
+        .guide-modal-body::-webkit-scrollbar-thumb:hover {
+            background: #9e9e9e;
+        }
+
+        /* --- NEW STOCK SELECTOR CSS --- */
+        .industry-group {
+            margin-bottom: 20px;
+        }
+
+        .industry-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #555;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+        }
+
+        .stock-btn {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 6px 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            color: #333;
+        }
+
+        .stock-btn:hover {
+            border-color: #bbb;
+            background: #fdfdfd;
+        }
+
+        .stock-btn.active {
+            background: #e3f2fd;
+            border-color: #1976d2;
+            color: #0d47a1;
+            font-weight: 700;
+        }
+
+        .exchange-select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        /* --- HISTORY BOARD CSS --- */
+        .history-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .history-table-container {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 10px 15px;
+            text-align: right;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .history-table th {
+            text-align: center;
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .history-table td:first-child {
+            text-align: center;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .history-row-today {
+            background-color: #e8f5e9;
+            font-weight: bold;
+            animation: flash 1s ease-in-out;
+        }
+
+        @keyframes flash {
+            0% {
+                background-color: #c8e6c9;
+            }
+
+            100% {
+                background-color: #e8f5e9;
+            }
+        }
+
+        .trend-up {
+            color: #2e7d32;
+        }
+
+        .trend-down {
+            color: #d32f2f;
+        }
+
+        .trend-ref {
+            color: #f57c00;
+        }
+
+        /* --- REAL-TIME INDICATORS CSS --- */
+        .indicator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .indicator-card {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+        .ind-name {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .ind-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .recommendation-box {
+            grid-column: 1 / -1;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rec-label {
+            font-weight: bold;
+            color: #1565c0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .rec-price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #d84315;
+        }
+
+        /* --- ENHANCED RECOMMENDATION SECTION --- */
+        .enhanced-rec-section {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 25px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(26, 35, 126, 0.3);
+        }
+
+        .enhanced-rec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .enhanced-rec-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .top-strategy-badge {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .zones-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .zones-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .zone-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .zone-card.buy-zone {
+            border-left: 4px solid #4caf50;
+        }
+
+        .zone-card.sell-zone {
+            border-left: 4px solid #f44336;
+        }
+
+        .zone-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .zone-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .zone-icon.buy {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+        }
+
+        .zone-icon.sell {
+            background: linear-gradient(135deg, #f44336, #c62828);
+        }
+
+        .zone-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .zone-price-main {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .zone-price-range {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-bottom: 10px;
+        }
+
+        .zone-condition {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .zone-condition strong {
+            color: #ffeb3b;
+        }
+
+        /* Action Plan */
+        .action-plan-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .action-plan-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 900px) {
+            .action-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .action-step {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .action-step:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #7c4dff, #651fff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 10px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .step-detail {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        /* Risk Reward Metrics */
+        .metrics-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .metric-pill {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .metric-pill.positive {
+            border: 1px solid #4caf50;
+        }
+
+        .metric-pill.negative {
+            border: 1px solid #f44336;
+        }
+
+        .metric-pill.neutral {
+            border: 1px solid #ff9800;
+        }
+
+        /* News Panel */
+        .news-section {
+            background: white;
+            border-radius: 12px;
+            margin-top: 25px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-header {
+            background: linear-gradient(135deg, #37474f, #263238);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .news-header h4 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .news-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .news-tab {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .news-tab.active {
+            background: #ff9800;
+        }
+
+        .news-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .news-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .news-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .news-item:hover {
+            background: #f8f9fa;
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .news-source {
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .news-source.vndirect {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .news-source.fireant {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .news-source.cafef {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .news-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .news-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 5px;
+        }
+
+        .news-summary {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .news-loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .news-type-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-left: 8px;
+        }
+
+        .news-type-tag.stock {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .news-type-tag.sector {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .news-type-tag.internal {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        /* --- MARKET SCAN BUTTON & PROGRESS --- */
+        .market-scan-btn {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .market-scan-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+        }
+
+        .market-scan-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .scan-progress-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .scan-progress-bar {
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .scan-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            border-radius: 6px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .scan-progress-text {
+            font-size: 0.9rem;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Phân Tích Kỹ Thuật VN100</h1>
+            <p>Biểu đồ nến và các chỉ báo kỹ thuật chuyên sâu.</p>
+            <div class="nav-links" style="margin-top: 15px;">
+                <a href="index.html" class="secondary-btn" style="text-decoration: none; margin-right: 10px;">Quay lại
+                    Biểu đồ</a>
+                <a href="company_detail.html" class="secondary-btn" style="text-decoration: none;">Tra cứu Doanh
+                    nghiệp</a>
+            </div>
+        </header>
+
+        <div class="container" style="margin-top: 20px;">
+            <div class="controls" style="flex-wrap: wrap; justify-content: center; gap: 20px;">
+
+                <!-- SECTOR DASHBOARD -->
+
+
+                <!-- MARKET SCAN SECTION -->
+                <div id="market-scan-section"
+                    style="background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%); padding: 30px; border-radius: 16px; margin-bottom: 30px; text-align: center; color: white; flex: 1; min-width: 350px; max-width: 500px;">
+                    <h2 style="margin: 0 0 10px 0; font-size: 1.5rem;">🎯 SÀNG LỌC CỔ PHIẾU TỰ ĐỘNG</h2>
+                    <p style="margin: 0 0 20px 0; opacity: 0.9;">Quét toàn bộ ~130 mã cổ phiếu, phân tích 8 chiến lược,
+                        xếp hạng theo Win Rate</p>
+                    <button id="market-scan-btn" class="market-scan-btn" onclick="startMarketScan()">
+                        🚀 Chọn Mã Cổ Phiếu Để Đầu Tư
+                    </button>
+                </div>
+
+                <!-- SCAN PROGRESS (hidden initially) -->
+                <div id="scan-progress-container" class="scan-progress-container" style="display: none; width: 100%;">
+                    <h4 style="margin: 0 0 15px 0; color: #333;">📡 Đang quét thị trường...</h4>
+                    <div class="scan-progress-bar">
+                        <div id="scan-progress-fill" class="scan-progress-fill"></div>
+                    </div>
+                    <div class="scan-progress-text">
+                        <span id="scan-progress-status">Đang chuẩn bị...</span>
+                        <span id="scan-progress-percent">0%</span>
+                    </div>
+                </div>
+
+                <!-- MARKET SCAN RESULTS (hidden initially) -->
+                <div id="market-scan-results" style="display: none; width: 100%;"></div>
+
+                <!-- DATE & CONTROLS -->
+                <div id="analysis-controls"
+                    style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 30px; border: 1px solid #e0e0e0; flex: 1; min-width: 350px; max-width: 500px;">
+                    <h3
+                        style="margin-top:0; color:#2c3e50; font-size:1.1em; border-bottom:1px solid #eee; padding-bottom:10px;">
+                        Thiết Lập Phân Tích (Đơn lẻ)</h3>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="analysis-stock-input"
+                            style="font-weight: bold; display: block; margin-bottom: 5px;">Mã Cổ Phiếu (Click để chọn từ
+                            danh sách):</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" id="analysis-stock-input" placeholder="Nhập mã hoặc click để chọn..."
+                                style="padding: 8px 12px; width: 100%; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;"
+                                onclick="openSectorModal()" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Sector Selection Modal (Dynamic) -->
+                    <div id="sector-modal" class="modal hidden">
+                        <div class="modal-content">
+                            <div class="modal-header"
+                                style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="display:flex; align-items:center; gap:15px;">
+                                    <h3 style="margin:0;">Chọn Cổ Phiếu</h3>
+                                    <select id="modal-exchange-select" class="exchange-select"
+                                        onchange="renderSectorModal()">
+                                        <option value="HOSE">HOSE (HSX)</option>
+                                        <option value="UPCOM">UPCOM</option>
+                                    </select>
+                                </div>
+                                <span class="close-modal" onclick="closeSectorModal()">&times;</span>
+                            </div>
+                            <div class="modal-body" id="sector-list-container">
+                                <!-- Dynamic Content Will Be Injected Here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap;" id="quick-date-buttons">
+                        <button class="quick-date-btn" data-weeks="1" title="1 Tuần"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">1
+                            Tuần</button>
+                        <button class="quick-date-btn" data-weeks="2" title="2 Tuần"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">2
+                            Tuần</button>
+                        <button class="quick-date-btn" data-months="1" title="1 Tháng"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">1
+                            Tháng</button>
+                        <button class="quick-date-btn" data-months="2" title="2 Tháng"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">2
+                            Tháng</button>
+                        <button class="quick-date-btn" data-years="1" title="1 Năm"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">1
+                            Năm</button>
+                        <button class="quick-date-btn" data-years="2" title="2 Năm"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">2
+                            Năm</button>
+                        <button class="quick-date-btn" data-years="3" title="3 Năm"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">3
+                            Năm</button>
+                        <button class="quick-date-btn" data-years="4" title="4 Năm"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">4
+                            Năm</button>
+                        <button class="quick-date-btn" data-years="5" title="5 Năm"
+                            style="padding: 6px 12px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 20px; cursor: pointer; font-size:0.9em; transition:all 0.2s;">5
+                            Năm</button>
+
+                    </div>
+
+                    <div style="display: flex; gap: 20px; align-items: flex-end; flex-wrap:wrap;">
+                        <div class="control-group">
+                            <label for="analysis-start-date"
+                                style="font-size:0.9em; display:block; margin-bottom:5px;">Từ ngày:</label>
+                            <input type="date" id="analysis-start-date"
+                                style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <div class="control-group">
+                            <label for="analysis-end-date"
+                                style="font-size:0.9em; display:block; margin-bottom:5px;">Đến ngày:</label>
+                            <input type="date" id="analysis-end-date"
+                                style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <button id="analyze-btn" class="primary-btn"
+                            style="height: 38px; min-width: 150px; background-color: #007bff; border:none; border-radius:4px; color:white; font-weight:bold; cursor:pointer;">
+                            🔍 Phân tích Ngay
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PROGRESS BAR -->
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- REAL-TIME HISTORY BOARD -->
+    <div class="container" id="price-history-section" style="display: none;">
+        <div class="history-section">
+            <h3
+                style="margin-top: 0; color: #2c3e50; font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <span>📊 Lịch Sử Giá & Biến Động (Real-time)</span>
+                <span id="history-last-update" style="font-size: 0.8rem; font-weight: normal; color: #777;"></span>
+            </h3>
+            <div class="history-table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Ngày</th>
+                            <th>Mở cửa</th>
+                            <th>Cao nhất</th>
+                            <th>Thấp nhất</th>
+                            <th>Đóng cửa</th>
+                            <th>Thay đổi</th>
+                            <th>Khối lượng</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- Data rows injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top: 10px; text-align: center; font-size: 0.85rem; color: #888; font-style: italic;">
+                * Dữ liệu được cập nhật tự động trong phiên giao dịch.
+            </div>
+
+            <!-- New Indicators Section -->
+            <div id="realtime-indicators" class="indicator-grid">
+                <!-- Injected via JS -->
+            </div>
+            <div id="buy-recommendation" class="recommendation-box" style="display:none;">
+                <div class="rec-label">🎯 Khuyến Nghị Mua (Hỗ trợ mạnh):</div>
+                <div id="rec-price-value" class="rec-price">--</div>
+            </div>
+
+            <!-- ENHANCED RECOMMENDATION SECTION -->
+            <div id="enhanced-recommendation-section" class="enhanced-rec-section" style="display: none;">
+                <!-- Header with Top Strategy -->
+                <div class="enhanced-rec-header">
+                    <div class="enhanced-rec-title">
+                        📊 Chi Tiết Khuyến Nghị Giao Dịch
+                    </div>
+                    <div id="top-strategy-badge" class="top-strategy-badge">
+                        🏆 <span id="top-strategy-name">--</span>
+                        <span id="top-strategy-winrate" style="opacity:0.9;">--% Win</span>
+                    </div>
+                </div>
+
+                <!-- Buy & Sell Zones Grid -->
+                <div class="zones-grid">
+                    <!-- Buy Zone -->
+                    <div class="zone-card buy-zone">
+                        <div class="zone-header">
+                            <div class="zone-icon buy">📈</div>
+                            <div class="zone-title">VÙNG MUA TIỀM NĂNG</div>
+                        </div>
+                        <div class="zone-price-main" id="buy-zone-price">--</div>
+                        <div class="zone-price-range" id="buy-zone-range">Vùng an toàn: -- đến --</div>
+                        <div class="zone-condition" id="buy-zone-condition">
+                            <strong>Điều kiện:</strong> <span>--</span>
+                        </div>
+                    </div>
+
+                    <!-- Sell Zone -->
+                    <div class="zone-card sell-zone">
+                        <div class="zone-header">
+                            <div class="zone-icon sell">📉</div>
+                            <div class="zone-title">VÙNG BÁN / CHỐT LỜI</div>
+                        </div>
+                        <div class="zone-price-main" id="sell-zone-price">--</div>
+                        <div class="zone-price-range" id="sell-zone-range">
+                            <span style="color:#4caf50;">Take Profit: --</span> |
+                            <span style="color:#f44336;">Stop Loss: --</span>
+                        </div>
+                        <div class="zone-condition" id="sell-zone-condition">
+                            <strong>Điều kiện:</strong> <span>--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Row -->
+                <div class="metrics-row" id="metrics-row">
+                    <div class="metric-pill positive">
+                        <span>📊</span> Win Rate: <strong id="metric-winrate">--</strong>
+                    </div>
+                    <div class="metric-pill neutral">
+                        <span>💰</span> Lợi nhuận TB: <strong id="metric-avg-return">--</strong>
+                    </div>
+                    <div class="metric-pill positive">
+                        <span>🎯</span> Risk/Reward: <strong id="metric-risk-reward">--</strong>
+                    </div>
+                    <div class="metric-pill neutral">
+                        <span>📈</span> Số lệnh: <strong id="metric-trades">--</strong>
+                    </div>
+                    <div class="metric-pill positive"
+                        style="border: 1px solid #2196f3; background: rgba(33, 150, 243, 0.15);">
+                        <span>📅</span> Tháng Tốt Nhất: <strong id="metric-best-month">--</strong>
+                    </div>
+                </div>
+
+                <!-- Action Plan Section -->
+                <div class="action-plan-section">
+                    <div class="action-plan-title">
+                        📋 KẾ HOẠCH HÀNH ĐỘNG CHI TIẾT
+                    </div>
+                    <div class="action-steps" id="action-steps">
+                        <div class="action-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Điều Kiện Vào Lệnh</div>
+                            <div class="step-detail" id="step-1-detail">Chờ tín hiệu xác nhận...</div>
+                        </div>
+                        <div class="action-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Khối Lượng Đề Xuất</div>
+                            <div class="step-detail" id="step-2-detail">Chia làm 2-3 đợt mua...</div>
+                        </div>
+                        <div class="action-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Điểm Chốt Lời</div>
+                            <div class="step-detail" id="step-3-detail">Khi đạt mục tiêu...</div>
+                        </div>
+                        <div class="action-step">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Điểm Cắt Lỗ</div>
+                            <div class="step-detail" id="step-4-detail">Nếu giá phá vỡ...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEWS SECTION -->
+            <div id="stock-news-section" class="news-section" style="display: none;">
+                <div class="news-header">
+                    <h4>📰 Tin Tức & Thông Tin Cổ Phiếu <span id="news-stock-symbol"></span></h4>
+                    <div class="news-tabs">
+                        <button class="news-tab active" data-type="all" onclick="filterNews('all')">Tất cả</button>
+                        <button class="news-tab" data-type="stock" onclick="filterNews('stock')">Cổ phiếu</button>
+                        <button class="news-tab" data-type="sector" onclick="filterNews('sector')">Ngành</button>
+                        <button class="news-tab" data-type="internal" onclick="filterNews('internal')">Nội bộ</button>
+                    </div>
+                </div>
+                <div class="news-list" id="news-list">
+                    <div class="news-loading">
+                        ⏳ Đang tải tin tức...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FULL WIDTH CHART SECTION -->
+    <div class="full-width-chart-wrapper">
+        <div class="indicator-panel"
+            style="max-width: 1000px; margin: 0 auto 20px auto; background: #333; color: white; padding: 15px; border-radius: 8px;">
+            <h4 style="border-bottom: 1px solid #555; padding-bottom: 10px;">Các chỉ báo kỹ thuật (Bật/Tắt)</h4>
+            <div class="toggles" style="display: flex; flex-wrap: wrap; gap: 15px;">
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="sma"> Moving Average
+                    (SMA)</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="ema"> Exponential MA
+                    (EMA)</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="bollinger"> Bollinger
+                    Bands</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="ichimoku"> Ichimoku
+                    Cloud</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="fibonacci"> Fibonacci
+                    Retracement</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="rsi" checked> RSI</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="macd"> MACD</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="stochastic">
+                    Stochastic</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="adx"> ADX</label>
+                <label><input type="checkbox" class="indicator-toggle" data-indicator="stddev"> Standard
+                    Deviation</label>
+            </div>
+        </div>
+
+        <div class="chart-section" id="chart-area-container">
+            <div id="main-chart-area" style="min-height: 550px;"></div>
+            <div id="indicator-charts-container"></div>
+        </div>
+    </div>
+
+    <!-- GUIDE SECTION MOVED HERE -->
+    <div class="container" style="margin-top: 20px;">
+        <div
+            style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e9ecef;">
+            <h3 style="margin-top: 0; color: #495057;">Hướng Dẫn Sử Dụng Chỉ Báo & Chiến Lược</h3>
+            <p style="color: #6c757d; font-style: italic; margin-bottom: 15px;">Bấm vào chỉ báo để xem hướng dẫn chi
+                tiết cách giao dịch.</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="guide-btn" onclick="openGuide('RSI')"
+                    style="padding: 8px 15px; border: 1px solid #ced4da; border-radius: 20px; background: white; cursor: pointer;">RSI</button>
+                <button class="guide-btn" onclick="openGuide('MACD')"
+                    style="padding: 8px 15px; border: 1px solid #ced4da; border-radius: 20px; background: white; cursor: pointer;">MACD</button>
+                <button class="guide-btn" onclick="openGuide('Bollinger')"
+                    style="padding: 8px 15px; border: 1px solid #ced4da; border-radius: 20px; background: white; cursor: pointer;">Bollinger
+                    Bands</button>
+                <button class="guide-btn" onclick="openGuide('SMA')"
+                    style="padding: 8px 15px; border: 1px solid #ced4da; border-radius: 20px; background: white; cursor: pointer;">SMA</button>
+                <button class="guide-btn" onclick="openGuide('Ichimoku')"
+                    style="padding: 8px 15px; border: 1px solid #ced4da; border-radius: 20px; background: white; cursor: pointer;">Ichimoku</button>
+                <button class="guide-btn" onclick="openGuide('Stochastic')"
+                    style="padding: 8px 15px; border: 1px solid #ced4da; border-radius: 20px; background: white; cursor: pointer;">Stochastic</button>
+                <button class="guide-btn" onclick="openGuide('ADX')"
+                    style="padding: 8px 15px; border: 1px solid #ced4da; border-radius: 20px; background: white; cursor: pointer;">ADX</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="container" style="margin-top: 20px;">
+            <div class="controls" style="flex-wrap: wrap;">
+                <div class="backtest-section"
+                    style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px; width: 100%;">
+                    <h2>Kiểm thử Chiến lược (Backtest) So Sánh</h2>
+
+                    <div class="controls" style="align-items: center; gap: 20px;">
+                        <div style="flex: 1; font-size: 0.9em; color: #555;">
+                            Hệ thống sẽ tự động chạy tất cả các chỉ báo thông dụng (RSI, MACD, Bollinger, SMA,
+                            Ichimoku,
+                            ADX) và so sánh hiệu suất trên nhiều khung thời gian.
+                        </div>
+                        <button id="run-backtest-btn" class="primary-btn"
+                            style="background: #28a745; height: 38px; min-width: 200px;">
+                            Phân Tích & So Sánh Tất Cả
+                        </button>
+                    </div>
+
+                    <!-- Summary Highlights (Top 3) -->
+                    <div id="bt-summary-container" style="margin-top: 30px; display: none;">
+                        <h3 style="color: #333; margin-bottom: 15px;">🏆 Top Chiến Lược Hiệu Quả Nhất (Win Rate)
+                        </h3>
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <div id="bt-summary-short"
+                                style="flex: 1; min-width: 300px; background: #e3f2fd; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <h4 style="margin-top: 0; color: #1976d2;">Ngắn Hạn (Short-term)</h4>
+                                <div class="content"></div>
+                            </div>
+                            <div id="bt-summary-long"
+                                style="flex: 1; min-width: 300px; background: #fff3e0; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <h4 style="margin-top: 0; color: #f57c00;">Dài Hạn (Long-term)</h4>
+                                <div class="content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Highlights (Top 3 Profit) -->
+                    <div id="bt-profit-summary-container" style="margin-top: 30px; display: none;">
+                        <h3 style="color: #333; margin-bottom: 15px;">💰 Top Chiến Lược Lợi Nhuận Cao Nhất</h3>
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <div id="bt-profit-summary-short"
+                                style="flex: 1; min-width: 300px; background: #e3f2fd; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <h4 style="margin-top: 0; color: #1976d2;">Ngắn Hạn (Short-term)</h4>
+                                <div class="content"></div>
+                            </div>
+                            <div id="bt-profit-summary-long"
+                                style="flex: 1; min-width: 300px; background: #fff3e0; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <h4 style="margin-top: 0; color: #f57c00;">Dài Hạn (Long-term)</h4>
+                                <div class="content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toggle Full Results -->
+                    <div id="bt-toggle-container" style="margin-top: 20px; text-align: center; display: none;">
+                        <button id="bt-toggle-btn"
+                            style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em;">
+                            ⬇️ Xem Tất Cả Kết Quả Chi Tiết (Bảng Đầy Đủ)
+                        </button>
+                        <div style="margin-top:5px; font-size:0.8em; color:#777;">* Nhấn vào đây để xem chi tiết
+                            từng
+                            mốc
+                            thời gian</div>
+                    </div>
+
+                    <!-- Dynamic Results Container -->
+                    <div id="bt-comparison-container" style="margin-top: 20px; display: none;"></div>
+
+
+                    <!-- Detailed Log -->
+                    <h3 id="bt-detail-title" style="display:none; margin-top: 30px;">Chi tiết Giao dịch</h3>
+
+                    <div id="bt-detail-container" style="display:none;">
+                        <!-- Stats Dashboard -->
+                        <div id="bt-stats-dashboard"
+                            style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                            <div style="flex: 1; min-width: 250px;">
+                                <div id="bt-detail-pie-chart" style="min-height: 250px;"></div>
+                            </div>
+                            <div
+                                style="flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 250px;">
+                                <div class="stat-card"
+                                    style="margin-bottom: 15px; padding: 15px; background: #e8f5e9; border-radius: 4px; border-left: 5px solid green;">
+                                    <div style="font-size: 0.9rem; color: #555;">Lệnh Lời Cao Nhất</div>
+                                    <span id="bt-max-win"
+                                        style="color: green; font-size: 1.2rem; font-weight: bold;">--</span>
+                                </div>
+                                <div class="stat-card"
+                                    style="margin-bottom: 15px; padding: 15px; background: #ffebee; border-radius: 4px; border-left: 5px solid red;">
+                                    <div style="font-size: 0.9rem; color: #555;">Lệnh Lỗ Lớn Nhất</div>
+                                    <span id="bt-max-loss"
+                                        style="color: red; font-size: 1.2rem; font-weight: bold;">--</span>
+                                </div>
+                                <div class="stat-card"
+                                    style="padding: 15px; background: #e3f2fd; border-radius: 4px; border-left: 5px solid blue;">
+                                    <div style="font-size: 0.9rem; color: #555;">Tổng Lệnh Lời / Lỗ</div>
+                                    <span id="bt-win-loss-count" style="font-size: 1.2rem; font-weight: bold;">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- New 12-Month Stacked Bar Chart -->
+                        <div id="bt-month-stacked-chart" style="margin-bottom: 20px; min-height: 300px;"></div>
+
+
+                        <div style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd;">
+                            <table class="bt-table" style="width: 100%; border-collapse: collapse;">
+                                <thead style="position: sticky; top: 0; background: #eee; z-index: 1;">
+                                    <tr>
+                                        <th>Tháng</th>
+                                        <th>Ngày Mua</th>
+                                        <th>Giá Mua</th>
+                                        <th>Ngày Bán</th>
+                                        <th>Giá Bán</th>
+                                        <th>Giữ (Ngày)</th>
+                                        <th>Lợi Nhuận %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bt-detail-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESTRUCTURED GUIDE MODAL (Embedded) -->
+    <div id="guide-modal-overlay" class="guide-modal-overlay">
+        <div class="guide-modal-container">
+            <div class="guide-modal-header">
+                <h2 class="guide-modal-title">Hướng Dẫn Giao Dịch</h2>
+                <button class="guide-close-btn" onclick="closeGuideModal()">&times;</button>
+            </div>
+
+            <div id="guide-modal-body" class="guide-modal-body">
+                <!-- Content Injected Here -->
+            </div>
+
+            <div class="guide-modal-footer">
+                <button class="guide-back-btn" onclick="closeGuideModal()">
+                    ⬅️ Quay lại
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="stock_list.js"></script>
+    <script src="indicators.js"></script>
+    <script src="backtest.js"></script>
+    <script src="app.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // --- EMBEDDED GUIDE LOGIC ---
+        const GUIDE_DATA = {
+            'RSI': `
+                <h3>Chỉ báo RSI (Relative Strength Index)</h3>
+                <span class="guide-subtitle">Chỉ số Sức mạnh Tương đối - Tác giả: J. Welles Wilder</span>
+                
+                <div class="guide-section-title">1. Khái niệm cốt lõi</div>
+                <p>RSI là một chỉ báo động lượng (momentum oscillator) đo lường tốc độ và mức độ thay đổi của chuyển động giá. RSI dao động trong biên độ từ 0 đến 100. Mục đích chính của RSI là giúp nhà đầu tư xác định xem tài sản đang ở trong tình trạng <strong>Quá Mua (Overbought)</strong> hay <strong>Quá Bán (Oversold)</strong>.</p>
+                <p>Theo mặc định, RSI thường sử dụng chu kỳ 14 phiên. Giá trị RSI càng cao thể hiện lực mua đang rất mạnh (nhưng có nguy cơ điều chỉnh), và ngược lại.</p>
+
+                <div class="guide-section-title">2. Các ngưỡng quan trọng</div>
+                <ul>
+                    <li><strong>Vùng Quá Mua (Trên 70):</strong> Khi RSI vượt lên trên 70, thị trường được coi là đang hưng phấn quá mức. Giá có thể đã tăng quá nhanh và có khả năng cao sẽ đảo chiều giảm hoặc đi ngang để điều chỉnh.</li>
+                    <li><strong>Vùng Quá Bán (Dưới 30):</strong> Khi RSI giảm xuống dưới 30, thị trường đang bị bán tháo quá mức. Áp lực bán có thể đã cạn kiệt và giá có khả năng bật tăng trở lại.</li>
+                    <li><strong>Ngưỡng 50:</strong> Đóng vai trò là ranh giới xu hướng. RSI > 50 thường ủng hộ xu hướng tăng, RSI < 50 ủng hộ xu hướng giảm.</li>
+                </ul>
+                
+                <div class="guide-section-title">3. Chiến lược Giao dịch Chi tiết</div>
+                <div class="guide-strategy-box">
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA (LONG)</span>
+                        <div>
+                            <strong>Chiến lược Hồi quy (Mean Reversion):</strong>
+                            <br>Chờ đợi RSI giảm xuống dưới vùng 30 (ví dụ 25). Sau đó, đặt lệnh MUA khi RSI <strong>cắt ngược lên trên mốc 30</strong>. Điều này xác nhận đáy tạm thời đã được thiết lập.
+                            <br><em>Ví dụ: Cổ phiếu VNM giảm mạnh, RSI về 22. Hai phiên sau RSI tăng lên 31 => Tín hiệu Mua.</em>
+                        </div>
+                    </div>
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-sell">BÁN (SHORT)</span>
+                        <div>
+                            <strong>Chiến lược Chốt lời/Bán khống:</strong>
+                            <br>Khi RSI vượt quá 70 (ví dụ 75). Đặt lệnh BÁN khi RSI <strong>cắt xuống dưới mốc 70</strong>. Đây là dấu hiệu phe mua đã đuối sức.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section-title">4. Phân kỳ (Divergence) - Tín hiệu Nâng cao</div>
+                <p>Tín hiệu mạnh nhất của RSI là sự phân kỳ:</p>
+                <ul>
+                    <li><strong>Phân kỳ Dương (Đảo chiều Tăng):</strong> Giá tạo đáy mới THẤP hơn đáy cũ, nhưng RSI lại tạo đáy mới CAO hơn đáy cũ. Cho thấy đà giảm đã yếu đi đáng kể => Chuẩn bị Mua.</li>
+                    <li><strong>Phân kỳ Âm (Đảo chiều Giảm):</strong> Giá tạo đỉnh mới CAO hơn đỉnh cũ, nhưng RSI lại tạo đỉnh mới THẤP hơn đỉnh cũ. Cho thấy đà tăng chỉ là "ảo" và sắp sập => Chuẩn bị Bán.</li>
+                </ul>
+            `,
+            'MACD': `
+                <h3>Chỉ báo MACD</h3>
+                <span class="guide-subtitle">(Moving Average Convergence Divergence) - Tác giả: Gerald Appel</span>
+                
+                <div class="guide-section-title">1. Khái niệm cốt lõi</div>
+                <p>MACD là một trong những chỉ báo Follow-trend (theo xu hướng) và Momentum (động lượng) phổ biến nhất. Nó được cấu tạo từ 3 thành phần chính:</p>
+                <ul>
+                    <li><strong>Đường MACD (Màu xanh):</strong> Là hiệu số giữa EMA 12 và EMA 26. Phản ứng nhanh với giá.</li>
+                    <li><strong>Đường Tín hiệu (Signal - Màu đỏ):</strong> Là đường EMA 9 của chính đường MACD. Phản ứng chậm hơn, dùng để xác nhận tín hiệu.</li>
+                    <li><strong>Histogram:</strong> Khoảng cách giữa đường MACD và đường Signal.</li>
+                </ul>
+
+                <div class="guide-section-title">2. Cách đọc tín hiệu</div>
+                <p>MACD hoạt động hiệu quả nhất trong các thị trường có xu hướng rõ ràng. Nó giúp xác định sự khởi đầu và kết thúc của một con sóng.</p>
+                
+                <div class="guide-section-title">3. Chiến lược Giao dịch Chi tiết</div>
+                <div class="guide-strategy-box">
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA</span>
+                        <div>
+                            <strong>Giao cắt Vàng (Golden Cross):</strong>
+                            <br>Tín hiệu xảy ra khi đường MACD cắt từ dưới lên trên đường Signal.
+                            <br><em>Mẹo:</em> Tín hiệu sẽ đáng tin cậy hơn nếu điểm giao cắt xảy ra ở dưới đường mốc 0 (Zero Line). Điều này báo hiệu một đợt đảo chiều từ giảm sang tăng mạnh mẽ.
+                        </div>
+                    </div>
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-sell">BÁN</span>
+                        <div>
+                            <strong>Giao cắt Tử thần (Death Cross):</strong>
+                            <br>Tín hiệu xảy ra khi đường MACD cắt từ trên xuống dưới đường Signal.
+                            <br><em>Mẹo:</em> Nếu giao cắt xảy ra ở trên cao so với đường 0, đây là tín hiệu chốt lời hoặc bán khống rất mạnh.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section-title">4. Ví dụ Thực tế</div>
+                <p>Hãy xem xét cổ phiếu HPG trong giai đoạn uptrend. Mỗi khi giá điều chỉnh nhẹ, đường MACD có thể tiến sát đường Signal nhưng không cắt xuống (hoặc cắt xuống nhẹ rồi vòng lên ngay). Khi Histogram chuyển từ Đỏ sang Xanh trở lại, đó là điểm gia tăng tỷ trọng (nhồi lệnh) tuyệt vời thay vì mua mới.</p>
+                <p><strong>Lưu ý quan trọng:</strong> MACD là chỉ báo trễ (lagging). Đừng sử dụng nó trong thị trường đi ngang (Sideway) biên độ hẹp vì sẽ gặp rất nhiều tín hiệu nhiễu (cắt lên cắt xuống liên tục gây lỗ phí giao dịch).</p>
+            `,
+            'Bollinger': `
+                <h3>Bollinger Bands (Dải Bollinger)</h3>
+                <span class="guide-subtitle">Công cụ đo lường biến động giá - Tác giả: John Bollinger</span>
+                
+                <div class="guide-section-title">1. Cấu tạo</div>
+                <p>Bollinger Bands bao gồm 3 đường:</p>
+                <ul>
+                    <li><strong>Dải giữa (Middle Band):</strong> Là đường SMA 20 (Trung bình động đơn giản 20 phiên).</li>
+                    <li><strong>Dải trên (Upper Band):</strong> SMA 20 + (2 x Độ lệch chuẩn).</li>
+                    <li><strong>Dải dưới (Lower Band):</strong> SMA 20 - (2 x Độ lệch chuẩn).</li>
+                </ul>
+                <p>Về lý thuyết thống kê, 95% biến động giá sẽ nằm gọn trong lòng hai dải này. Do đó, bất kỳ khi nào giá thoát ra ngoài dải, nó được xem là một sự kiện "bất thường" và có xu hướng bị kéo ngược trở lại bên trong.</p>
+
+                <div class="guide-section-title">2. Chiến lược Giao dịch Chi tiết</div>
+                <div class="guide-strategy-box">
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA (Bắt đáy)</span>
+                        <div>
+                            <strong>Chiến lược Chạm bật:</strong>
+                            <br>Khi giá giảm mạnh và chạm (hoặc xuyên thủng) Dải Dưới. Chờ đợi một cây nến xanh đảo chiều (như Pinbar hoặc Engulfing) đóng cửa quay lại bên trong dải.
+                            <br><strong>Mục tiêu:</strong> Chốt lời tại Dải Giữa (SMA 20) hoặc Dải Trên.
+                        </div>
+                    </div>
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA (Breakout)</span>
+                        <div>
+                            <strong>Chiến lược Mở nút cổ chai (Squeeze):</strong>
+                            <br>Khi hai dải Bollinger co thắt lại rất hẹp (thể hiện biến động thấp, tích lũy). Nếu giá bất ngờ phá vỡ Dải Trên với khối lượng lớn, đây là khởi đầu của một xu hướng tăng cực mạnh. Hãy MUA đuổi ngay lập tức.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section-title">3. Ví dụ Kinh điển</div>
+                <p>Trong giai đoạn tích lũy của SSI, Bollinger Bands co lại rất nhỏ. Đột nhiên một phiên giá tăng trần, đâm thủng dải trên (Upper Band Walk). Nhiều người sợ hãi bán ra vì nghĩ là "Quá mua", nhưng thực tế đó là điểm mua đẹp nhất. Giá sau đó "bám dải" đi lên liên tục trong 2 tháng. Chỉ bán khi giá quay đầu cắt xuống thủng lại vào trong dải.</p>
+            `,
+            'SMA': `
+                <h3>Đường SMA (Simple Moving Average)</h3>
+                <span class="guide-subtitle">Đường trung bình động đơn giản</span>
+
+                <div class="guide-section-title">1. Ý nghĩa</div>
+                <p>SMA giúp làm mượt dữ liệu giá để xác định xu hướng chính. Nó đóng vai trò là các ngưỡng Hỗ trợ và Kháng cự động.</p>
+                <ul>
+                    <li><strong>SMA 20 (Ngắn hạn):</strong> Phản ánh xu hướng tháng. Dùng cho lướt sóng.</li>
+                    <li><strong>SMA 50 (Trung hạn):</strong> Phản ánh xu hướng quý. Rất quan trọng với các tổ chức.</li>
+                    <li><strong>SMA 200 (Dài hạn):</strong> "Đường sinh mệnh" của cổ phiếu. Giá trên SMA 200 là Uptrend dài hạn, dưới là Downtrend.</li>
+                </ul>
+
+                <div class="guide-section-title">2. Chiến lược Giao dịch</div>
+                <div class="guide-strategy-box">
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA</span>
+                        <div>
+                            <strong>Golden Cross (Giao cắt vàng):</strong>
+                            <br>Khi đường SMA ngắn hạn (ví dụ SMA 50) cắt từ dưới lên trên đường SMA dài hạn (SMA 200). Đây là tín hiệu MUA kinh điển cho các nhà đầu tư dài hạn, báo hiệu Uptrend có thể kéo dài hàng năm.
+                        </div>
+                    </div>
+                     <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA (Pullback)</span>
+                        <div>
+                            Trong một xu hướng tăng rõ ràng (Giá > SMA 20 > SMA 50), mỗi khi giá điều chỉnh giảm chạm về đường SMA 20 hoặc SMA 50 và bật lên, đó là điểm mua gia tăng an toàn nhất.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section-title">3. Quy tắc Quản trị rủi ro với SMA</div>
+                <p>Không bao giờ mua cổ phiếu khi giá đang nằm dưới SMA 200 nếu bạn là nhà đầu tư an toàn. Đường SMA 200 khi đó đóng vai trò là kháng cự rất mạnh (cứ lên chạm là bị bán xuống). Hãy kiên nhẫn chờ giá vượt hẳn SMA 200 và test lại thành công (biến kháng cự thành hỗ trợ) rồi mới giải ngân.</p>
+            `,
+            'Ichimoku': `
+                <h3>Mây Ichimoku Kinko Hyo</h3>
+                <span class="guide-subtitle">"Cái nhìn thoáng qua về sự cân bằng của đồ thị"</span>
+
+                <div class="guide-section-title">1. Hệ thống toàn diện</div>
+                <p>Ichimoku không chỉ là một chỉ báo, nó là một hệ giao dịch hoàn chỉnh. Nó cho biết xu hướng, hỗ trợ/kháng cự, và động lượng cùng một lúc. Thành phần quan trọng nhất là <strong>Mây Kumo</strong> (được tạo bởi Senkou Span A và Senkou Span B).</p>
+
+                <div class="guide-section-title">2. Cách đọc Mây (Kumo)</div>
+                <ul>
+                    <li><strong>Giá nằm TRÊN Mây:</strong> Xu hướng Tăng (Uptrend). Mây đóng vai trò là Hỗ trợ mạnh. Chỉ canh MUA.</li>
+                    <li><strong>Giá nằm DƯỚI Mây:</strong> Xu hướng Giảm (Downtrend). Mây đóng vai trò là Kháng cự mạnh. Chỉ canh BÁN hoặc đứng ngoài.</li>
+                    <li><strong>Giá nằm TRONG Mây:</strong> Thị trường không rõ xu hướng (Sideway). Hạn chế giao dịch vì giá sẽ giật rất mạnh trong biên độ mây.</li>
+                </ul>
+
+                <div class="guide-section-title">3. Chiến lược Giao dịch (Kumo Breakout)</div>
+                <div class="guide-strategy-box">
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA</span>
+                        <div>
+                            <strong>Tín hiệu TK Cross + Mây:</strong>
+                            <br>1. Giá phải nằm trên Mây.
+                            <br>2. Đường Tenkan-sen (Chuyển đổi - Đỏ) cắt lên trên đường Kijun-sen (Cơ sở - Xanh).
+                            <br>3. Chikou Span (Đường trễ) phải nằm trên đường giá của 26 phiên trước.
+                            <br>=> Đây là tín hiệu Mua xác suất thắng cực cao.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="guide-section-title">4. Ví dụ</div>
+                <p>Khi FPT vượt qua đám mây dày màu đỏ (Kumo Breakout) và tích lũy trên đó, đám mây đổi màu xám/xanh. Sau đó giá FPT tăng 30%. Nhà giao dịch Ichimoku sẽ giữ lệnh cho đến khi giá đóng cửa thủng đường Kijun-sen (đường xanh) hoặc chui ngược vào trong mây.</p>
+            `,
+            'Stochastic': `
+                <h3>Stochastic Oscillator</h3>
+                <span class="guide-subtitle">Chỉ báo dao động ngẫu nhiên - Tác giả: George Lane</span>
+
+                <div class="guide-section-title">1. Nguyên lý</div>
+                <p>Stochastic so sánh giá đóng cửa cụ thể của một chứng khoán với phạm vi giá của nó trong một khoảng thời gian nhất định. Nó nhạy hơn RSI và phù hợp hơn trong thị trường đi ngang (Sideway).</p>
+                <p>Hai đường cấu tạo: %K (Đường nhanh - Xanh) và %D (Đường chậm - Đỏ - là SMA của %K).</p>
+
+                <div class="guide-section-title">2. Chiến lược Giao dịch</div>
+                <div class="guide-strategy-box">
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA</span>
+                        <div>
+                            Chờ Stochastic giảm xuống dưới mức 20 (Vùng Quá Bán).
+                            <br>Tín hiệu xác nhận: Đường %K cắt lên trên đường %D.
+                            <br><em>Lưu ý:</em> Tín hiệu này cực mạnh nếu xảy ra tại vùng Hỗ trợ của giá.
+                        </div>
+                    </div>
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-sell">BÁN</span>
+                        <div>
+                            Chờ Stochastic tăng lên trên mức 80 (Vùng Quá Mua).
+                            <br>Tín hiệu xác nhận: Đường %K cắt xuống dưới đường %D.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section-title">3. Mẹo nâng cao</div>
+                <p>Đừng dùng Stochastic để bắt đỉnh đáy trong một trend mạnh. Ví dụ trong một Uptrend mạnh, Stochastic có thể nằm lì ở vùng trên 80 (Quá mua) hàng tuần liền. Bán lúc đó là "mất hàng". Chỉ sử dụng chiến lược Quá Mua/Quá Bán khi thị trường đang đi ngang (Swing Trading).</p>
+            `,
+            'ADX': `
+                <h3>Chỉ báo ADX (Average Directional Index)</h3>
+                <span class="guide-subtitle">Đo lường Sức mạnh Xu hướng</span>
+
+                <div class="guide-section-title">1. Khác biệt quan trọng</div>
+                <p>ADX không cho bạn biết giá sẽ tăng hay giảm. <strong>ADX chỉ cho bạn biết xu hướng hiện tại có MẠNH hay không.</strong></p>
+                <ul>
+                    <li>ADX < 20: Xu hướng yếu, thị trường đi ngang (Sideway). Không nên đánh theo trend (Breakout sẽ xịt).</li>
+                    <li>ADX > 25: Bắt đầu có xu hướng.</li>
+                    <li>ADX > 40: Xu hướng cực mạnh (mạnh nhất).</li>
+                </ul>
+                <p>Để biết hướng (Tăng hay Giảm), ta phải nhìn vào hai đường chỉ báo đi kèm: <strong>+DI (Xanh - Lực mua)</strong> và <strong>-DI (Đỏ - Lực bán)</strong>.</p>
+
+                <div class="guide-section-title">2. Chiến lược Giao dịch</div>
+                <div class="guide-strategy-box">
+                    <div class="guide-strategy-item">
+                        <span class="guide-tag tag-buy">MUA</span>
+                        <div>
+                            <strong>Điều kiện 1:</strong> Đường +DI cắt lên trên đường -DI (Phe mua kiểm soát).
+                            <br><strong>Điều kiện 2:</strong> ADX > 25 và đang hướng lên (Xác nhận xu hướng tăng đang mạnh dần).
+                            <br>=> MUA và nắm giữ chặt (Hold).
+                        </div>
+                    </div>
+                     <div class="guide-strategy-item">
+                        <span class="guide-tag tag-sell">BÁN/THOÁT</span>
+                        <div>
+                            Khi ADX đang ở mức rất cao (ví dụ > 50) và bắt đầu gục đầu hướng xuống. Điều đó không có nghĩa là giá sẽ giảm ngay, mà có nghĩa là xu hướng tăng đã yếu đi, thị trường sắp chuyển sang đi ngang hoặc điều chỉnh. Đây là lúc chốt lời dần.
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // OPEN FUNCTION
+        window.openGuide = function (type) {
+            const overlay = document.getElementById('guide-modal-overlay');
+            const body = document.getElementById('guide-modal-body');
+
+            if (GUIDE_DATA[type]) {
+                body.innerHTML = GUIDE_DATA[type];
+                overlay.classList.add('show');
+                overlay.style.display = 'flex'; // Ensure flex is set
+            }
+        };
+
+        // CLOSE FUNCTION
+        window.closeGuideModal = function () {
+            const overlay = document.getElementById('guide-modal-overlay');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                if (!overlay.classList.contains('show')) overlay.style.display = 'none';
+            }, 300); // Wait for transition
+        };
+
+        // Click outside to close
+        document.getElementById('guide-modal-overlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeGuideModal();
+            }
+        });
+
+    </script>
+
+    <!-- Market Screener Module -->
+    <script src="market_screener.js"></script>
+    <script>
+        // Market Scan Trigger
+        async function startMarketScan() {
+            const btn = document.getElementById('market-scan-btn');
+            const progressContainer = document.getElementById('scan-progress-container');
+            const progressFill = document.getElementById('scan-progress-fill');
+            const progressStatus = document.getElementById('scan-progress-status');
+            const progressPercent = document.getElementById('scan-progress-percent');
+            const resultsContainer = document.getElementById('market-scan-results');
+
+            // Disable button
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Đang quét...';
+
+            // Show progress
+            progressContainer.style.display = 'block';
+            resultsContainer.style.display = 'none';
+
+            try {
+                const rankings = await MarketScreener.runFullScan((progress) => {
+                    progressFill.style.width = progress.percent + '%';
+                    progressPercent.textContent = progress.percent + '%';
+                    progressStatus.textContent = `Đang quét: ${progress.symbol} (${progress.current}/${progress.total}) - Lỗi: ${progress.errors}`;
+                });
+
+                // Render results
+                MarketScreener.renderResults(rankings);
+
+                // Hide progress
+                progressContainer.style.display = 'none';
+
+            } catch (e) {
+                console.error('Scan error:', e);
+                alert('Có lỗi xảy ra khi quét thị trường: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🚀 Chọn Mã Cổ Phiếu Để Đầu Tư';
+            }
+        }
+    </script>
+</body>
+
+</html>

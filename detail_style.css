@@ -1,0 +1,472 @@
+:root {
+    --primary-color: #f39c12;
+    /* Orange as per previous design or preference */
+    --primary-dark: #d35400;
+    --text-color: #333;
+    --text-light: #666;
+    --bg-color: #f4f6f8;
+    --sidebar-bg: #2c3e50;
+    --sidebar-text: #ecf0f1;
+    --white: #ffffff;
+    --border-color: #ddd;
+    --danger-color: #e74c3c;
+    --success-color: #27ae60;
+    --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.brand {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 35px 10px 10px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.search-box i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.stock-list-container {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.list-header {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 10px;
+}
+
+.stock-list {
+    list-style: none;
+}
+
+.stock-item {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: space-between;
+}
+
+.stock-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.stock-item.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-btn {
+    text-decoration: none;
+    color: var(--sidebar-text);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Header */
+.company-header {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.company-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.company-identity {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.company-identity img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.company-identity h1 {
+    font-size: 28px;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.company-identity h2 {
+    font-size: 16px;
+    color: var(--text-light);
+    font-weight: 400;
+    margin-top: 5px;
+}
+
+.company-quick-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* State Messages */
+.state-message {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    gap: 20px;
+    text-align: center;
+}
+
+/* Content Area */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-light);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.tab-content {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    min-height: 400px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Lists */
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.news-item,
+.event-item,
+.doc-item {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.news-item:hover,
+.event-item:hover,
+.doc-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.item-meta {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.item-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 8px;
+    display: block;
+    text-decoration: none;
+}
+
+.item-title:hover {
+    color: var(--primary-color);
+}
+
+.item-summary {
+    font-size: 14px;
+    color: #555;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Grid List for Leadership */
+.grid-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.person-card {
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.person-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.person-name {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.person-role {
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+/* Profile */
+.card {
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--primary-dark);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-item label {
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+/* New Sections CSS */
+.sub-item,
+.leader-item {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-left: 3px solid var(--primary-color);
+}
+
+.sub-item h4,
+.leader-item h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: var(--primary-color);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: white;
+}
+
+.analysis-table th,
+.analysis-table td {
+    padding: 10px;
+    border: 1px solid #eee;
+    text-align: left;
+}
+
+/* Insight content usually contains raw HTML */
+.insight-content ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.insight-content li {
+    margin-bottom: 5px;
+}
+
+.text-danger {
+    color: var(--danger-color);
+}

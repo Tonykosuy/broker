@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu Thông tin Doanh nghiệp VN100</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="detail_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fas fa-chart-line"></i> VN100 Info
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="stock-search" placeholder="Nhập mã CP (VD: HPG)...">
+                <i class="fas fa-search"></i>
+            </div>
+
+            <div class="stock-list-container">
+                <div class="list-header">Danh sách VN100</div>
+                <ul id="stock-list" class="stock-list">
+                    <!-- Stock items will be populated here -->
+                </ul>
+            </div>
+
+            <div class="nav-links">
+                <a href="vn100_export.html" class="nav-btn"><i class="fas fa-file-export"></i> Xuất Excel Giá</a>
+                <a href="index.html" class="nav-btn"><i class="fas fa-home"></i> Trang chủ</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div id="loading" class="loading-overlay" style="display: none;">
+                <div class="spinner"></div>
+                <p>Đang tải dữ liệu...</p>
+            </div>
+
+            <!-- Header Info -->
+            <header class="company-header" id="company-header" style="display: none;">
+                <div class="company-top">
+                    <div class="company-identity">
+                        <img id="company-logo" src="" alt="Logo" onerror="this.src='https://via.placeholder.com/64'">
+                        <div>
+                            <h1 id="company-symbol">---</h1>
+                            <h2 id="company-name">---</h2>
+                        </div>
+                    </div>
+                    <div class="company-quick-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Sàn</span>
+                            <span class="stat-value" id="exchange">HOSE</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Ngành</span>
+                            <span class="stat-value" id="industry">---</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Error State -->
+            <div id="initial-state" class="state-message">
+                <i class="fas fa-building fa-3x"></i>
+                <h3>Chọn một công ty để xem chi tiết</h3>
+                <p>Dữ liệu được tổng hợp từ Vietstock, CafeF và VNDirect</p>
+            </div>
+
+            <div id="error-state" class="state-message" style="display: none; color: var(--danger-color);">
+                <i class="fas fa-exclamation-triangle fa-3x"></i>
+                <h3 id="error-msg">Có lỗi xảy ra</h3>
+            </div>
+
+            <!-- Content Tabs -->
+            <div id="detail-content" class="detail-content" style="display: none;">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="news"><i class="far fa-newspaper"></i> Tin tức</button>
+                    <button class="tab-btn" data-tab="events"><i class="far fa-calendar-alt"></i> Sự kiện & Cổ
+                        tức</button>
+                    <button class="tab-btn" data-tab="documents"><i class="far fa-file-pdf"></i> Tài liệu</button>
+                    <button class="tab-btn" data-tab="leadership"><i class="fas fa-users"></i> Ban lãnh đạo</button>
+                    <button class="tab-btn" data-tab="profile"><i class="fas fa-info-circle"></i> Hồ sơ</button>
+                    <button class="tab-btn" data-tab="subsidiaries"><i class="fas fa-sitemap"></i> Cty con & Liên
+                        kết</button>
+                    <button class="tab-btn" data-tab="analysis"><i class="fas fa-chart-pie"></i> Phân tích</button>
+                    <button class="tab-btn" data-tab="financials"><i class="fas fa-balance-scale"></i> Tài
+                        chính</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- News Tab -->
+                    <div id="news" class="tab-pane active">
+                        <div class="section-title">Tin tức mới nhất</div>
+                        <div id="news-list" class="items-list"></div>
+                    </div>
+
+                    <!-- Events Tab -->
+                    <div id="events" class="tab-pane">
+                        <div class="section-title">Lịch sự kiện và Chi trả cổ tức</div>
+                        <div id="events-list" class="items-list"></div>
+                    </div>
+
+                    <!-- Documents Tab -->
+                    <div id="documents" class="tab-pane">
+                        <div class="section-title">Văn bản & Báo cáo</div>
+                        <div id="documents-list" class="items-list"></div>
+                    </div>
+
+                    <!-- Leadership Tab -->
+                    <div id="leadership" class="tab-pane">
+                        <div class="section-title">Ban lãnh đạo & Sở hữu</div>
+                        <div id="leadership-list" class="grid-list"></div>
+                    </div>
+
+                    <!-- Profile Tab -->
+                    <div id="profile" class="tab-pane">
+                        <div class="card">
+                            <h3>Giới thiệu</h3>
+                            <p id="profile-summary">---</p>
+                        </div>
+                        <div class="card mt-20">
+                            <h3>Thông tin cơ bản</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Địa chỉ:</label> <span id="address">---</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Website:</label> <a href="#" id="website" target="_blank">---</a>
+                                </div>
+                                <div class="info-item">
+                                    <label>Điện thoại:</label> <span id="phone">---</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Ngày niêm yết:</label> <span id="listing-date">---</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subsidiaries Tab -->
+                    <div id="subsidiaries" class="tab-pane">
+                        <div class="section-title">Công ty con & Liên kết</div>
+                        <div id="subsidiaries-list" class="grid-list"></div>
+                    </div>
+
+                    <!-- Analysis Tab -->
+                    <div id="analysis" class="tab-pane">
+                        <div class="section-title">Phân tích & Chỉ số</div>
+                        <div class="table-responsive">
+                            <table class="analysis-table">
+                                <tbody id="analysis-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Financials Tab -->
+                    <div id="financials" class="tab-pane">
+                        <div class="section-title">Báo cáo tài chính tóm tắt</div>
+                        <div class="table-responsive">
+                            <table class="analysis-table">
+                                <thead>
+                                    <tr>
+                                        <th>Chỉ tiêu (Tỷ VNĐ)</th>
+                                        <th>Giá trị</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="financials-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals if needed, but links usually open in new tab -->
+
+    <script src="vn100_list.js"></script>
+    <script src="detail_script.js"></script>
+</body>
+
+</html>
